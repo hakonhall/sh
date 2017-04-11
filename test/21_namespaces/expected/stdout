@@ -1,0 +1,2 @@
+declare -- NAMESPACES_0_foo="initial string"
+declare -- NAMESPACES_0_foo="changed"

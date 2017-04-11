@@ -1,0 +1,6 @@
+declare -- declare_unique_0=""
+declare -a declare_unique_1='()'
+declare -a declare_unique_2='([0]="a" [1]="b" [2]="c")'
+declare -a declare_unique_3='([0]="-element1" [1]="-element2")'
+declare -A declare_unique_4='()'
+declare -A declare_unique_5='(["[]key1\""]="val1" [key2]="val2 \"\\  [ ]" )'
