@@ -1,28 +1,19 @@
-# Make e.g. test_runner.sh accessible in PATH
-export PATH
+AUTOGEN_MAKEFILE_DEPS = $(wildcard tests/*_test.sh) $(wildcard src/*.sh)
 
-FORCE_PASS =
-
-# The tests are run in order - that's why they are prefixed by a number.
-TESTS := $(sort $(wildcard tests/*_test.sh))
-PASS_PATHS := $(TESTS:tests/%_test.sh=test/%/pass)
+TEST_TARGET =
 
 .PHONY: all
 all: test
 
 .PHONY: test
-test: PATH := $(PWD)/src:$(PWD)/tests:$(PATH)
-test: $(PASS_PATHS)
+test: .Makefile.testdeps.autogen
+	$(MAKE) -f Makefile.test $(MAKEFLAGS) $(TEST_TARGET)
 
-# Always regenerte .Makefile.testdeps.autogen
-.PHONY: .Makefile.testdeps.autogen
-.Makefile.testdeps.autogen:
+.Makefile.testdeps.autogen: $(AUTOGEN_MAKEFILE_DEPS)
 	main/makemake.sh > $@
 
--include .Makefile.testdeps.autogen
-
 .PHONY: pass
-pass: FORCE_PASS := --pass
+pass: TEST_TARGET := pass
 pass: all
 
 .PHONY: clean

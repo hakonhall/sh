@@ -1,0 +1,2 @@
+declare -A MREPLY='([source_deps.sh]="base.sh define.sh map.sh match.sh" [map.sh]="" [base.sh]="" [first.sh]="" [match.sh]="base.sh" [function_doc.sh]="base.sh match.sh" [options.sh]="base.sh match.sh" [program.sh]="" [define.sh]="base.sh" )'
+declare -A MREPLY='([base_test.sh]="base.sh" [match_test.sh]="match.sh" [map_test.sh]="map.sh" [base2_test.sh]="base.sh" [source_deps_test.sh]="source_deps.sh" [function_doc_test.sh]="function_doc.sh" [define_test.sh]="define.sh" )'

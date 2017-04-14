@@ -115,7 +115,7 @@ function Main {
 
         printf "test/%s/pass: tests/%s_test.sh %s %s\n" \
                "$prefix" "$prefix" "$dep_list" "${prerequisite_test_targets[*]}"
-        printf "\ttest_runner.sh \$(FORCE_PASS) $<\n"
+        printf "\tmain/test_runner.sh \$(FORCE_PASS) $<\n"
         printf "\n"
     done
 }

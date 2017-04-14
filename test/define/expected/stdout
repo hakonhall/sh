@@ -11,11 +11,11 @@ declare -A emptymap='()'
 name='map'
 declare -A map='([k1]="a1" [k2]="a2" ["[] \""]="a3" )'
 name='ns'
-/home/hakon/local/github.com/hakonhall/sh/tests/22_define_test.sh: line 8: declare: ns: not found
+/home/hakon/local/github.com/hakonhall/sh/tests/define_test.sh: line 8: declare: ns: not found
 name='DEFINE_0'
-/home/hakon/local/github.com/hakonhall/sh/tests/22_define_test.sh: line 8: declare: DEFINE_0: not found
+/home/hakon/local/github.com/hakonhall/sh/tests/define_test.sh: line 8: declare: DEFINE_0: not found
 name='ns__subns'
-/home/hakon/local/github.com/hakonhall/sh/tests/22_define_test.sh: line 8: declare: ns__subns: not found
+/home/hakon/local/github.com/hakonhall/sh/tests/define_test.sh: line 8: declare: ns__subns: not found
 name='DEFINE_0__doors'
 declare -- DEFINE_0__doors="3"
 declare -n doors2="DEFINE_0__doors"

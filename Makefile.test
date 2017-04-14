@@ -1,0 +1,19 @@
+# Make e.g. test_runner.sh accessible in PATH
+export PATH
+
+FORCE_PASS =
+
+TESTS := $(wildcard tests/*_test.sh)
+PASS_PATHS := $(TESTS:tests/%_test.sh=test/%/pass)
+
+.PHONY: test
+test: PATH := $(PWD)/src:$(PWD)/tests:$(PATH)
+test: $(PASS_PATHS)
+
+.PHONY: pass
+pass: FORCE_PASS := --pass
+pass: test
+
+# This include must be here and not at the top because ... of the PATH
+# statements above?
+-include .Makefile.testdeps.autogen
