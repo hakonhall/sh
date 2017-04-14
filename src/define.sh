@@ -50,17 +50,17 @@ function ResolveGlobalVariableName {
 #     Without VALUE, the string is initialized to the empty string.
 #
 # Options
-#   -a             Make NAME an (indexed) array (see \`declare')
-#   -A             Make NAME an associative array (map) (see \`declare')
+#   -a             Make NAME an (indexed) array (see `declare')
+#   -A             Make NAME an associative array (map) (see `declare')
 #   -c             Create a unique NAME to return in REPLY
-#   -i             Convert value(s) to integer (see \`declare')
-#   -l             Convert value(s) to lower-case (see \`declare')
+#   -i             Convert value(s) to integer (see `declare')
+#   -l             Convert value(s) to lower-case (see `declare')
 #   -N             Make NAME a namespace
 #   -o NAMESPACE   Define NAME in the given namespace, returning the full
 #                  global name in REPLY
-#   -r             Make NAME readonly (see \`declare')
-#   -u             Convert value(s) to upper-case (see \`declare')
-#   -x             Export NAME to environment for commands (see \`declare')
+#   -r             Make NAME readonly (see `declare')
+#   -u             Convert value(s) to upper-case (see `declare')
+#   -x             Export NAME to environment for commands (see `declare')
 #
 # All options of `declare' are valid above, except: fFngt ("g" is implicit)
 #
