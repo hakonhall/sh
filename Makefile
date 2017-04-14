@@ -14,12 +14,12 @@ all: test
 test: PATH := $(PWD)/src:$(PWD)/tests:$(PATH)
 test: $(PASS_PATHS)
 
--include .Makefile.testdeps.autogen
-
 # Always regenerte .Makefile.testdeps.autogen
 .PHONY: .Makefile.testdeps.autogen
 .Makefile.testdeps.autogen:
 	main/makemake.sh > .Makefile.testdeps.autogen
+
+-include .Makefile.testdeps.autogen
 
 .PHONY: pass
 pass: FORCE_PASS := --pass
@@ -27,6 +27,7 @@ pass: all
 
 .PHONY: clean
 clean:
+	rm -f .Makefile.testdeps.autogen
 	rm -rf test/*/actual
 	rm -rf test/*/pass
 
