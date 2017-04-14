@@ -51,6 +51,10 @@ function Main {
         test_deps["$testfile"]="${!TRANSITIVE_DEPS[*]}"
     done
 
+    # If a test T depends on A, B, and C, and another test T2 depends on a
+    # strict subset, e.g. A and B, then make sure the T2 test completes
+    # successfully before trying to run test T.
+
     local test
     for test in "${!test_deps[@]}"
     do

@@ -17,7 +17,7 @@ test: $(PASS_PATHS)
 # Always regenerte .Makefile.testdeps.autogen
 .PHONY: .Makefile.testdeps.autogen
 .Makefile.testdeps.autogen:
-	main/makemake.sh > .Makefile.testdeps.autogen
+	main/makemake.sh > $@
 
 -include .Makefile.testdeps.autogen
 
@@ -33,11 +33,3 @@ clean:
 
 .PHONY: re
 re: clean all
-
-# src/match.sh: src/base.sh
-# src/options.sh: src/base.sh
-# src/test_runner.sh: src/base.sh
-# tests/02_base_test.sh: src/base.sh
-# tests/03_base_test.sh: src/base.sh
-# tests/10_match_test.sh: src/match.sh
-# tests/20_declare_unique_test.sh: src/declare_unique.sh
