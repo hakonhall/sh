@@ -26,8 +26,12 @@ function Match {
         for ((Match_i = 0; Match_i < Match_num_vars; ++Match_i))
         do
             local -i Match_group=$((Match_i + 1))
-            local -n Match_varref="${Match_varnames[$Match_i]}"
-            Match_varref="${BASH_REMATCH[$Match_group]}"
+            local Match_varname="${Match_varnames[$Match_i]}"
+            if test "$Match_varname" != ""
+            then
+                local -n Match_varref="$Match_varname"
+                Match_varref="${BASH_REMATCH[$Match_group]}"
+            fi
         done
 
         return 0

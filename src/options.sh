@@ -2,11 +2,12 @@ if test -v SOURCE_OPTIONS_SH
 then
     return
 fi
-declare SOURCE_OPTIONS_SH=1
+declare -r SOURCE_OPTIONS_SH=1
 
 # Shell module options - Define and parse options.
 
 source base.sh
+source match.sh
 
 # An option --foo-bar is represented by a global variable __foo_bar.  Options
 # without argument have value false or true (option present).
@@ -18,19 +19,19 @@ function DefineOption {
 
     if ! Match "$option" "$OPTION_REGEX"
     then
-        Fail "Option doesn't match regex '$OPTION_REGEX': '$option'"
+        Fatal "Option doesn't match regex '$OPTION_REGEX': '$option'"
     fi
 
     if test -v OPTION_TO_CANONICAL["$option"]
     then
-        Fail "Option '$option' has already been defined"
+        Fatal "Option '$option' has already been defined"
     fi
 
     # Must match the corresponding line in ParseOption
     local variable_name="${option//-/_}"
     if test -v "$variable_name"
     then
-        Fail "Variable '$variable_name' derived from option '$option' is already defined"
+        Fatal "Variable '$variable_name' derived from option '$option' is already defined"
     fi
 
     declare -g "$variable_name"="$default_value"
@@ -41,12 +42,12 @@ function DefineOption {
     then
         if ! Match "$optional_alias_option" "$OPTION_REGEX"
         then
-            Fail "Alias option doesn't match '$OPTION_REGEX': '$optional_alias_option'"
+            Fatal "Alias option doesn't match '$OPTION_REGEX': '$optional_alias_option'"
         fi
 
         if test -v OPTION_TO_CANONICAL["$optional_alias_option"]
         then
-            Fail "Option '$optional_alias_option' has already been defined"
+            Fatal "Option '$optional_alias_option' has already been defined"
         fi
 
         OPTION_TO_CANONICAL["$optional_alias_option"]="$option"
@@ -54,14 +55,14 @@ function DefineOption {
 }
 
 function ParseOptions {
-    # $1 must be the name of an associative array that names all gh options
-    # (that does NOT take an additional argument, see _arg_options_ref).
+    # $1 must be the name of an associative array that names all options (that
+    # does NOT take an additional argument, see _arg_options_ref).
     #
     # The name MUST NOT start with an underscore.
     local -n ParseOptions_options_ref="$1"
 
-    # $2 must be the name of an associative array that names all gh options
-    # that always takes exactly one additional argument.
+    # $2 must be the name of an associative array that names all options that
+    # always takes exactly one additional argument.
     #
     # The name MUST NOT start with an underscore.
     local -n ParseOptions_arg_options_ref="$2"
@@ -105,7 +106,7 @@ function ParseOptions {
                 then
                     if (($# == 0))
                     then
-                        Fail "Missing argument to '$ParseOptions_arg'"
+                        Fatal "Missing argument to '$ParseOptions_arg'"
                     fi
                     local ParseOptions_value="$1"
                     shift
@@ -116,7 +117,7 @@ function ParseOptions {
                     then
                         if (($# == 0))
                         then
-                            Fail "Missing argument to '$ParseOptions_arg'"
+                            Fatal "Missing argument to '$ParseOptions_arg'"
                         fi
                         local ParseOptions_value="$1"
                         shift
@@ -131,7 +132,7 @@ function ParseOptions {
         fi
     done
 
-    # gh options
+    # options
     CopyHashtableTo ParseOptions_options OUTH
 
     # Unrecognized options and git options (with arguments if some of the git

@@ -37,6 +37,9 @@ function ResolveGlobalVariableName {
 # Usage: DefineGlobalVariable [OPTION...] [NAME] [VALUE...]
 # Declare and set a global variable.
 #
+# The main benefit of DefineGlobalVariable over `declare' is the ability to
+# define namespaces, see below.
+#
 # NAME is declared with the given options, and then set according to the type
 # of the declaration:
 #   - An indexed array (-a) with VALUE as the elements.

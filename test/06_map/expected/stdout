@@ -1,0 +1,2 @@
+declare -A tomap='([a]="A" [b]="B" [c]="C" )'
+declare -A tomap='([a]="A" [b]="B" )'
