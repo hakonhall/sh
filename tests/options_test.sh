@@ -1,19 +1,19 @@
 source options.sh
 
-declare -rA TAKE_ARGS2=(
+declare -rA TAKE_ARGS=(
     [-f]=true [--foo]=true [--bar]=false [-b]=false [-c]=false)
 
 function HandleOptionCallback {
     local -n hoc_options="$1"
     local hoc_option="$2"
 
-    if ! test -v TAKE_ARGS2["$hoc_option"]
+    if ! test -v TAKE_ARGS["$hoc_option"]
     then
         _2="Unknown option '$hoc_option'"
         return 1
     fi
 
-    if test "${TAKE_ARGS2[$hoc_option]}" == true
+    if test "${TAKE_ARGS[$hoc_option]}" == true
     then
         if (( $# < 3 ))
         then
@@ -30,7 +30,7 @@ function HandleOptionCallback {
     fi
 }
 
-function TestParseOption {
+function Test1ParseOption {
     local -A options=([e]=E)
     echo ParseOption HandleOptionCallback options "$@"
     if ParseOption HandleOptionCallback options "$@"
@@ -42,33 +42,33 @@ function TestParseOption {
     fi
 }
 
-function TestParseOptions {
-    TestParseOption b
-    TestParseOption -b
-    TestParseOption --bar
-    TestParseOption -f
-    TestParseOption -fval
-    TestParseOption -f val
-    TestParseOption --foo
-    TestParseOption --foo val
-    TestParseOption -bc
-    TestParseOption -bcfval
-    TestParseOption -bcf val
-    TestParseOption -@
-    TestParseOption --f@@
+function TestParseOption {
+    Test1ParseOption b
+    Test1ParseOption -b
+    Test1ParseOption --bar
+    Test1ParseOption -f
+    Test1ParseOption -fval
+    Test1ParseOption -f val
+    Test1ParseOption --foo
+    Test1ParseOption --foo val
+    Test1ParseOption -bc
+    Test1ParseOption -bcfval
+    Test1ParseOption -bcf val
+    Test1ParseOption -@
+    Test1ParseOption --f@@
 }
 
-function Test1ParseOptions2 {
+function Test1ParseOptions {
     __zoo=init
     __kid=false
     _c=false
 
-    echo ParseOptions2 "$@"
-    ParseOptions2 "$@"
+    echo ParseOptions "$@"
+    ParseOptions "$@"
     declare -p _1a __zoo __kid _c
 }
 
-function TestParseOptions2 {
+function TestParseOptions {
     declare -gA Options_option_ids=(
         [--zoo]=zid [-z]=zid [--kar]=kid [-k]=kid [-c]=cid
     )
@@ -79,15 +79,15 @@ function TestParseOptions2 {
     declare -g _c=""
     declare -gA Options_option_info_cid=([varname]=_c)
 
-    Test1ParseOptions2
-    Test1ParseOptions2 arg1 arg2
-    Test1ParseOptions2 -k
-    Test1ParseOptions2 arg1 --zoo val arg2 -c
+    Test1ParseOptions
+    Test1ParseOptions arg1 arg2
+    Test1ParseOptions -k
+    Test1ParseOptions arg1 --zoo val arg2 -c
 }
 
 function Main {
+    TestParseOption
     TestParseOptions
-    TestParseOptions2
 }
 
 Main "$@"

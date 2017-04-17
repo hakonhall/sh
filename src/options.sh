@@ -324,7 +324,7 @@ function Options_OptionCallback {
     fi
 }
 
-function ParseOptions2 {
+function ParseOptions {
     local -A our_options=([-n]=true)
 
     local ns=Options

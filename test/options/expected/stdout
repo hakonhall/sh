@@ -33,22 +33,22 @@ ParseOption HandleOptionCallback options -@
 declare -- _2="Invalid short option '-@'"
 ParseOption HandleOptionCallback options --f@@
 declare -- _2="Invalid long option '--f@@'"
-ParseOptions2
+ParseOptions
 declare -a _1a='()'
 declare -- __zoo="init"
 declare -- __kid="false"
 declare -- _c="false"
-ParseOptions2 arg1 arg2
+ParseOptions arg1 arg2
 declare -a _1a='([0]="arg1" [1]="arg2")'
 declare -- __zoo="init"
 declare -- __kid="false"
 declare -- _c="false"
-ParseOptions2 -k
+ParseOptions -k
 declare -a _1a='()'
 declare -- __zoo="init"
 declare -- __kid="true"
 declare -- _c="false"
-ParseOptions2 arg1 --zoo val arg2 -c
+ParseOptions arg1 --zoo val arg2 -c
 declare -a _1a='([0]="arg1" [1]="arg2")'
 declare -- __zoo="val"
 declare -- __kid="false"
