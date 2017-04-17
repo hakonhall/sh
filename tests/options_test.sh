@@ -2,7 +2,6 @@ source options2.sh
 
 declare -rA TAKE_ARGS2=(
     [-f]=true [--foo]=true [--bar]=false [-b]=false [-c]=false)
-declare -rA TAKE_ARGS=([-f]=true [--foo]=true [-b]=false)
 
 function HandleOptionCallback {
     local -n hoc_options="$1"
@@ -86,61 +85,9 @@ function TestParseOptions2 {
     Test1ParseOptions2 arg1 --zoo val arg2 -c
 }
 
-function TestParseOption {
-    REPLY=""
-    REPLY2=""
-    MREPLY=()
-
-    echo ParseOption TAKE_ARGS "$@"
-    if ParseOption TAKE_ARGS "$@"
-    then
-        declare -p REPLY REPLY2 MREPLY
-    else
-        declare -p REPLY
-    fi
-}
-
-function TestParseOptions {
-    declare -p TAKE_ARGS
-
-    TestParseOption --foo val
-    TestParseOption --bar val
-    TestParseOption -f val
-    TestParseOption -b val
-    TestParseOption -@
-    TestParseOption --foo
-    TestParseOption --bar
-    TestParseOption -f
-    TestParseOption -fval
-    TestParseOption --
-    TestParseOption -
-    TestParseOption --f@@
-    TestParseOption --foo=val
-    TestParseOption -abc
-    TestParseOption -abf val
-    TestParseOption -abfval
-    TestParseOption non-option
-}
-
-function TestDefineOption {
-    echo DefineOption "$@"
-    DefineOption "$@"
-    declare -p "$REPLY"
-}
-
-function TestDefineOptions {
-    TestDefineOption -- --foo
-    TestDefineOption -d val -- --bar
-    DefineGlobalVariable -N options_test
-    TestDefineOption -n options_test -- --foo
-    # TestDefineOption -a -- --foo
-}
-
 function Main {
     TestParseOption2s
     TestParseOptions2
-    TestParseOptions
-    TestDefineOptions
 }
 
 Main "$@"
