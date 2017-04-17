@@ -79,15 +79,32 @@ function TestParseOptions {
     declare -g _c=""
     declare -gA Options_option_info_cid=([varname]=_c)
 
-    Test1ParseOptions
-    Test1ParseOptions arg1 arg2
-    Test1ParseOptions -k
-    Test1ParseOptions arg1 --zoo val arg2 -c
+    Test1ParseOptions --
+    Test1ParseOptions -- arg1 arg2
+    Test1ParseOptions -- -k
+    Test1ParseOptions -- arg1 --zoo val arg2 -c
+}
+
+function Test1DefineOption {
+    unset Options_option_ids
+
+    echo DefineOption "$@"
+    DefineOption "$@"
+    declare -p Options_option_ids
+}
+
+function TestDefineOption {
+    Test1DefineOption -- --single -s -S
+    declare -p Options_option_info___single
+
+    Test1DefineOption -- --tool -t
+    declare -p Options_option_info___tool
 }
 
 function Main {
     TestParseOption
     TestParseOptions
+    TestDefineOption
 }
 
 Main "$@"

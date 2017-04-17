@@ -5,14 +5,27 @@ fi
 declare -r SOURCE_OPTIONS_SH=1
 
 # Shell module options - Define and parse options.
-#
-# Make a globally unique variable prefix, and pass that in as the first
-# argument to each of the functions below (parameter named 'this').
 
 source base.sh
-source define.sh
-source map.sh
-source match.sh
+
+# Problem:
+#  - How does ParseOptions parse its own options?
+#  - It could perhaps define its options (DefineOption) and then call
+#    ParseOptions?  But then, how does DefineOption parse ITS options?
+
+function InternalParseOptions {
+    local -n InternalParseOptions_options="$1"
+    shift
+
+    for 
+
+function ParseOptions {
+    local -A options=([-n]="")
+    InternalParseOptions options "$@"
+}
+
+
+
 
 declare -r OPTIONS_SHORT_OPTION='^-[a-zA-Z]$'
 declare -r OPTIONS_LONG_OPTION='^(--[a-zA-Z0-9][a-zA-Z0-9_-]*)(=(.*))?$'
@@ -416,6 +429,7 @@ function ParseOptions {
         shift
     done
             
+
     local -A our_options=([-n]=true)
 
     local ns=""
@@ -431,7 +445,6 @@ function ParseOptions {
     do
         if test "$1" == --
         then
-            shift
             break
         fi
 

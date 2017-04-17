@@ -33,23 +33,29 @@ ParseOption HandleOptionCallback options -@
 declare -- _2="Invalid short option '-@'"
 ParseOption HandleOptionCallback options --f@@
 declare -- _2="Invalid long option '--f@@'"
-ParseOptions
+ParseOptions --
 declare -a _1a='()'
 declare -- __zoo="init"
 declare -- __kid="false"
 declare -- _c="false"
-ParseOptions arg1 arg2
+ParseOptions -- arg1 arg2
 declare -a _1a='([0]="arg1" [1]="arg2")'
 declare -- __zoo="init"
 declare -- __kid="false"
 declare -- _c="false"
-ParseOptions -k
+ParseOptions -- -k
 declare -a _1a='()'
 declare -- __zoo="init"
 declare -- __kid="true"
 declare -- _c="false"
-ParseOptions arg1 --zoo val arg2 -c
+ParseOptions -- arg1 --zoo val arg2 -c
 declare -a _1a='([0]="arg1" [1]="arg2")'
 declare -- __zoo="val"
 declare -- __kid="false"
 declare -- _c="true"
+DefineOption -- --single -s -S
+declare -A Options_option_ids='([--single]="__single" [-S]="__single" [-s]="__single" )'
+declare -A Options_option_info___single='([varname]="__single" )'
+DefineOption -- --tool -t
+declare -A Options_option_ids='([-t]="__tool" [--tool]="__tool" )'
+declare -A Options_option_info___tool='([varname]="__tool" )'
