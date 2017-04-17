@@ -1,4 +1,4 @@
-source options2.sh
+source options.sh
 
 declare -rA TAKE_ARGS2=(
     [-f]=true [--foo]=true [--bar]=false [-b]=false [-c]=false)
