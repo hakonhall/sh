@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! test -d src -a -d main -a -d tests
+if ! test -d src -a -d tests
 then
     echo "PWD doesn't look like a hakonhall/sh directory"
     exit 1

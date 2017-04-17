@@ -1,9 +1,9 @@
 source source_deps.sh
 
 function Main {
-    BuildSourceDependencyGraph ../../../src
+    BuildSourceDependencyGraph ../testdir/src
     declare -p MREPLY
-    BuildSourceDependencyGraph ../../../tests
+    BuildSourceDependencyGraph ../testdir/tests
     declare -p MREPLY
 }
 

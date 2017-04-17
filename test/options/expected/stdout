@@ -1,0 +1,122 @@
+ParseOption2 HandleOptionCallback options b
+declare -- _1="0"
+declare -A options='([e]="E" )'
+ParseOption2 HandleOptionCallback options -b
+declare -- _1="1"
+declare -A options='([e]="E" [-b]="true" )'
+ParseOption2 HandleOptionCallback options --bar
+declare -- _1="1"
+declare -A options='([--bar]="true" [e]="E" )'
+ParseOption2 HandleOptionCallback options -f
+declare -- _2="Missing argument to '-f'"
+ParseOption2 HandleOptionCallback options -fval
+declare -- _1="1"
+declare -A options='([e]="E" [-f]="val" )'
+ParseOption2 HandleOptionCallback options -f val
+declare -- _1="1"
+declare -A options='([e]="E" [-f]="val" )'
+ParseOption2 HandleOptionCallback options --foo
+declare -- _2="Missing argument to '--foo'"
+ParseOption2 HandleOptionCallback options --foo val
+declare -- _1="2"
+declare -A options='([--foo]="val" [e]="E" )'
+ParseOption2 HandleOptionCallback options -bc
+declare -- _1="1"
+declare -A options='([e]="E" [-c]="true" [-b]="true" )'
+ParseOption2 HandleOptionCallback options -bcfval
+declare -- _1="1"
+declare -A options='([e]="E" [-f]="val" [-c]="true" [-b]="true" )'
+ParseOption2 HandleOptionCallback options -bcf val
+declare -- _1="1"
+declare -A options='([e]="E" [-f]="val" [-c]="true" [-b]="true" )'
+ParseOption2 HandleOptionCallback options -@
+declare -- _2="Invalid short option '-@'"
+ParseOption2 HandleOptionCallback options --f@@
+declare -- _2="Invalid long option '--f@@'"
+ParseOptions2
+declare -a _1a='()'
+declare -- __zoo="init"
+declare -- __kid="false"
+declare -- _c="false"
+ParseOptions2 arg1 arg2
+declare -a _1a='([0]="arg1" [1]="arg2")'
+declare -- __zoo="init"
+declare -- __kid="false"
+declare -- _c="false"
+ParseOptions2 -k
+declare -a _1a='()'
+declare -- __zoo="init"
+declare -- __kid="true"
+declare -- _c="false"
+ParseOptions2 arg1 --zoo val arg2 -c
+declare -a _1a='([0]="arg1" [1]="arg2")'
+declare -- __zoo="val"
+declare -- __kid="false"
+declare -- _c="true"
+declare -Ar TAKE_ARGS='([--foo]="true" [-f]="true" [-b]="false" )'
+ParseOption TAKE_ARGS --foo val
+declare -- REPLY="2"
+declare -- REPLY2="true"
+declare -A MREPLY='([--foo]="val" )'
+ParseOption TAKE_ARGS --bar val
+declare -- REPLY="1"
+declare -- REPLY2="true"
+declare -A MREPLY='([--bar]="true" )'
+ParseOption TAKE_ARGS -f val
+declare -- REPLY="2"
+declare -- REPLY2="true"
+declare -A MREPLY='([-f]="val" )'
+ParseOption TAKE_ARGS -b val
+declare -- REPLY="1"
+declare -- REPLY2="true"
+declare -A MREPLY='([-b]="true" )'
+ParseOption TAKE_ARGS -@
+declare -- REPLY="Invalid short option '@'"
+ParseOption TAKE_ARGS --foo
+declare -- REPLY="Missing argument to '--foo'"
+ParseOption TAKE_ARGS --bar
+declare -- REPLY="1"
+declare -- REPLY2="true"
+declare -A MREPLY='([--bar]="true" )'
+ParseOption TAKE_ARGS -f
+declare -- REPLY="Missing argument to short option 'f'"
+ParseOption TAKE_ARGS -fval
+declare -- REPLY="1"
+declare -- REPLY2="true"
+declare -A MREPLY='([-f]="val" )'
+ParseOption TAKE_ARGS --
+declare -- REPLY="1"
+declare -- REPLY2="false"
+declare -A MREPLY='()'
+ParseOption TAKE_ARGS -
+declare -- REPLY="0"
+declare -- REPLY2="false"
+declare -A MREPLY='()'
+ParseOption TAKE_ARGS --f@@
+declare -- REPLY="Long option '--f@@' is not a valid"
+ParseOption TAKE_ARGS --foo=val
+declare -- REPLY="1"
+declare -- REPLY2="true"
+declare -A MREPLY='([--foo]="val" )'
+ParseOption TAKE_ARGS -abc
+declare -- REPLY="1"
+declare -- REPLY2="true"
+declare -A MREPLY='([-c]="true" [-b]="true" [-a]="true" )'
+ParseOption TAKE_ARGS -abf val
+declare -- REPLY="2"
+declare -- REPLY2="true"
+declare -A MREPLY='([-f]="val" [-b]="true" [-a]="true" )'
+ParseOption TAKE_ARGS -abfval
+declare -- REPLY="1"
+declare -- REPLY2="true"
+declare -A MREPLY='([-f]="val" [-b]="true" [-a]="true" )'
+ParseOption TAKE_ARGS non-option
+declare -- REPLY="0"
+declare -- REPLY2="false"
+declare -A MREPLY='()'
+DefineOption -- --foo
+declare -- __foo="false"
+DefineOption -d val -- --bar
+declare -- __bar="val"
+DefineOption -n options_test -- --foo
+declare -- options_test___foo="false"

@@ -5,9 +5,18 @@ fi
 declare SOURCE_BASE_SH=1
 
 # Function output variables. REPLY is defined/builtin, see `read'.
-declare REPLY2 REPLY3
-declare -a AREPLY AREPLY2
-declare -A MREPLY MREPLY2
+declare REPLY2="" REPLY3=""
+declare -a AREPLY=() AREPLY2=()
+declare -A MREPLY=() MREPLY2=()
+
+# Can't make up my mind. Perhaps _1* is better. Or OUT1*?
+declare _1="" _2="" _3=""
+declare -a _1a=() _2a=() _3a=()
+declare -A _1A=() _2A=() _3A=()
+
+declare OUT1="" OUT2="" OUT3=""
+declare -a OUT1a=() OUT2a=() OUT3a=()
+declare -A OUT1A=() OUT2A=() OUT3A=()
 
 # Usage: Fail [message...]
 # Print message to stderr and exit

@@ -10,7 +10,7 @@ declare -i DEFINE_next_id=0
 declare -A DEFINE_namespaces=()
 
 function AssertValidVariableName {
-    local id="$"
+    local id="$1"
 
     if test "$id" == _
     then
@@ -23,6 +23,9 @@ function AssertValidVariableName {
     elif [[ "$id" =~ ^[a-zA-Z0-9_]+$ ]]
     then
         return 0
+    else
+        # E.g. empty string, @£@$, etc.
+        :
     fi
 
     Fatal "$func: \`$id': not a valid identifier"
@@ -31,7 +34,7 @@ function AssertValidVariableName {
 function ResolveGlobalVariableName {
     local namespace="$1"
     local name="$2"
-    REPLY="${namespace}__${name}"
+    REPLY="${namespace}_${name}"
 }
 
 # Usage: DefineGlobalVariable [OPTION...] [NAME] [VALUE...]

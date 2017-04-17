@@ -14,15 +14,15 @@ name='ns'
 /home/hakon/local/github.com/hakonhall/sh/tests/define_test.sh: line 8: declare: ns: not found
 name='DEFINE_0'
 /home/hakon/local/github.com/hakonhall/sh/tests/define_test.sh: line 8: declare: DEFINE_0: not found
-name='ns__subns'
-/home/hakon/local/github.com/hakonhall/sh/tests/define_test.sh: line 8: declare: ns__subns: not found
-name='DEFINE_0__doors'
-declare -- DEFINE_0__doors="3"
-declare -n doors2="DEFINE_0__doors"
+name='ns_subns'
+/home/hakon/local/github.com/hakonhall/sh/tests/define_test.sh: line 8: declare: ns_subns: not found
+name='DEFINE_0_doors'
+declare -- DEFINE_0_doors="3"
+declare -n doors2="DEFINE_0_doors"
 doors = 5
-name='DEFINE_0__dashboard'
-declare -A DEFINE_0__dashboard='([vents]="4" [speedometer]="1" )'
-name='DEFINE_0__seat_placements'
-declare -a DEFINE_0__seat_placements='([0]="r1l" [1]="r1r" [2]="r2l" [3]="r2m" [4]="r2r")'
+name='DEFINE_0_dashboard'
+declare -A DEFINE_0_dashboard='([vents]="4" [speedometer]="1" )'
+name='DEFINE_0_seat_placements'
+declare -a DEFINE_0_seat_placements='([0]="r1l" [1]="r1r" [2]="r2l" [3]="r2m" [4]="r2r")'
 name='DEFINE_1'
 declare -- DEFINE_1="-val1"

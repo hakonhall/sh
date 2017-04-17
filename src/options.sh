@@ -9,6 +9,11 @@ declare -r SOURCE_OPTIONS_SH=1
 source base.sh
 source match.sh
 
+declare -r OPTION_REGEX='^(-[a-zA-Z0-9]|--[a-zA-Z0-9][_a-zA-Z0-9-]*)$'
+declare -A OPTION_TAKES_ARG=()
+declare -A OPTION_TO_CANONICAL=()
+
+
 # An option --foo-bar is represented by a global variable __foo_bar.  Options
 # without argument have value false or true (option present).
 function DefineOption {
@@ -143,11 +148,6 @@ function ParseOptions {
     # Array of arguments - i.e. those arguments following the options.
     OUTA2=("$@")
 }
-
-# Note: A string matching OPTION_REGEX is a valid key for an associative array.
-declare -r OPTION_REGEX='^(-[a-zA-Z0-9]|--[a-zA-Z0-9][_a-zA-Z0-9-]*)$'
-declare -A OPTION_TAKES_ARG=()
-declare -A OPTION_TO_CANONICAL=()
 
 function ClearOptions {
     local canonical_option

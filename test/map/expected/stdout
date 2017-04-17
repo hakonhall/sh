@@ -1,2 +1,3 @@
 declare -A tomap='([a]="A" [b]="B" [c]="C" )'
 declare -A tomap='([a]="A" [b]="B" )'
+declare -a AREPLY='([0]="a" [1]="d")'
