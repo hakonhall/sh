@@ -1,38 +1,36 @@
-# Make e.g. test_runner.sh accessible in PATH
-export PATH
+# --no-print-directory avoids messages like:
+# make[1]: Entering directory '.../sh'
+# make[1]: Leaving directory '.../sh'
+MAKEFLAGS += --no-print-directory -j4 -l4 -O
 
-FORCE_PASS =
+AUTOGEN_MAKEFILE_DEPS = $(wildcard tests/*_test.sh) $(wildcard src/*.sh)
 
-# The tests are run in order - that's why they are prefixed by a number.
-TESTS := $(sort $(wildcard tests/*_test.sh))
-PASS_PATHS := $(TESTS:tests/%_test.sh=test/%/pass)
+TEST_TARGET =
 
-.PHONY: all
-all: test
+# This is needed because target-specific variables cannot affect prerequisites.
+CLEAN_PREREQ =
+ifeq ($(findstring clean,$(MAKECMDGOALS)) ,clean)
+CLEAN_PREREQ = clean
+else ifeq ($(findstring re,$(MAKECMDGOALS)),re)
+CLEAN_PREREQ = clean
+endif
 
 .PHONY: test
-test: PATH := $(PWD)/src:$(PWD)/tests:$(PATH)
-test: $(PASS_PATHS)
+test: .Makefile.testdeps.autogen
+	@$(MAKE) -f Makefile.test $(MAKEFLAGS) $(TEST_TARGET)
 
-$(PASS_PATHS): test/%/pass: tests/%_test.sh
-	test_runner.sh $(FORCE_PASS) $<
+.Makefile.testdeps.autogen: $(AUTOGEN_MAKEFILE_DEPS) $(CLEAN_PREREQ)
+	main/makemake.sh > $@
 
 .PHONY: pass
-pass: FORCE_PASS := --pass
-pass: all
+pass: TEST_TARGET := pass
+pass: test
 
 .PHONY: clean
 clean:
-	rm -rf test/*/actual
-	rm -rf test/*/pass
+	rm -rf .Makefile.testdeps.autogen test/*/actual test/*/pass
 
+# re doesn't have a dependency on clean, since that's taken care of with
+# CLEAN_PREREQ.
 .PHONY: re
-re: clean all
-
-# src/match.sh: src/base.sh
-# src/options.sh: src/base.sh
-# src/test_runner.sh: src/base.sh
-# tests/02_base_test.sh: src/base.sh
-# tests/03_base_test.sh: src/base.sh
-# tests/10_match_test.sh: src/match.sh
-# tests/20_declare_unique_test.sh: src/declare_unique.sh
+re: test

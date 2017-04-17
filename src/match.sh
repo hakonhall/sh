@@ -6,6 +6,16 @@ declare -r SOURCE_MATCH_SH=1
 
 source base.sh
 
+# Usage: Match TEXT REGEX [VARNAME...]
+# Match the text against the regex, capturing subgroups in varname.
+#
+# Return 0 on success, and in case each matched subgroup of the regex will be
+# saved to non-empty varnames.  Example:
+#
+#   local Is
+#   if Match "$text" '^( |_)*:(foo+):(a|b)' '' foo
+#   then
+#     ... "$foo" contains the part of "$text" that matched foo+
 function Match {
     local Match_text="$1"
     local Match_regex="$2"
@@ -26,8 +36,12 @@ function Match {
         for ((Match_i = 0; Match_i < Match_num_vars; ++Match_i))
         do
             local -i Match_group=$((Match_i + 1))
-            local -n Match_varref="${Match_varnames[$Match_i]}"
-            Match_varref="${BASH_REMATCH[$Match_group]}"
+            local Match_varname="${Match_varnames[$Match_i]}"
+            if test "$Match_varname" != ""
+            then
+                local -n Match_varref="$Match_varname"
+                Match_varref="${BASH_REMATCH[$Match_group]}"
+            fi
         done
 
         return 0

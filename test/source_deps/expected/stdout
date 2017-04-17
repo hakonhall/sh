@@ -1,0 +1,2 @@
+declare -A MREPLY='([a.sh]="" [b-sources-a.sh]="a.sh" [c-sources-a.sh]="a.sh" [d-sources-a-and-b.sh]="a.sh b-sources-a.sh" )'
+declare -A MREPLY='([t2_test.sh]="a.sh d-sources-a-and-b.sh" [t1_test.sh]="a.sh" )'
