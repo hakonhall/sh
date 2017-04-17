@@ -1,37 +1,37 @@
-ParseOption2 HandleOptionCallback options b
+ParseOption HandleOptionCallback options b
 declare -- _1="0"
 declare -A options='([e]="E" )'
-ParseOption2 HandleOptionCallback options -b
+ParseOption HandleOptionCallback options -b
 declare -- _1="1"
 declare -A options='([e]="E" [-b]="true" )'
-ParseOption2 HandleOptionCallback options --bar
+ParseOption HandleOptionCallback options --bar
 declare -- _1="1"
 declare -A options='([--bar]="true" [e]="E" )'
-ParseOption2 HandleOptionCallback options -f
+ParseOption HandleOptionCallback options -f
 declare -- _2="Missing argument to '-f'"
-ParseOption2 HandleOptionCallback options -fval
+ParseOption HandleOptionCallback options -fval
 declare -- _1="1"
 declare -A options='([e]="E" [-f]="val" )'
-ParseOption2 HandleOptionCallback options -f val
+ParseOption HandleOptionCallback options -f val
 declare -- _1="1"
 declare -A options='([e]="E" [-f]="val" )'
-ParseOption2 HandleOptionCallback options --foo
+ParseOption HandleOptionCallback options --foo
 declare -- _2="Missing argument to '--foo'"
-ParseOption2 HandleOptionCallback options --foo val
+ParseOption HandleOptionCallback options --foo val
 declare -- _1="2"
 declare -A options='([--foo]="val" [e]="E" )'
-ParseOption2 HandleOptionCallback options -bc
+ParseOption HandleOptionCallback options -bc
 declare -- _1="1"
 declare -A options='([e]="E" [-c]="true" [-b]="true" )'
-ParseOption2 HandleOptionCallback options -bcfval
+ParseOption HandleOptionCallback options -bcfval
 declare -- _1="1"
 declare -A options='([e]="E" [-f]="val" [-c]="true" [-b]="true" )'
-ParseOption2 HandleOptionCallback options -bcf val
+ParseOption HandleOptionCallback options -bcf val
 declare -- _1="1"
 declare -A options='([e]="E" [-f]="val" [-c]="true" [-b]="true" )'
-ParseOption2 HandleOptionCallback options -@
+ParseOption HandleOptionCallback options -@
 declare -- _2="Invalid short option '-@'"
-ParseOption2 HandleOptionCallback options --f@@
+ParseOption HandleOptionCallback options --f@@
 declare -- _2="Invalid long option '--f@@'"
 ParseOptions2
 declare -a _1a='()'

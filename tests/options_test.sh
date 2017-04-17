@@ -30,10 +30,10 @@ function HandleOptionCallback {
     fi
 }
 
-function TestParseOption2 {
+function TestParseOption {
     local -A options=([e]=E)
-    echo ParseOption2 HandleOptionCallback options "$@"
-    if ParseOption2 HandleOptionCallback options "$@"
+    echo ParseOption HandleOptionCallback options "$@"
+    if ParseOption HandleOptionCallback options "$@"
     then
         declare -p _1
         declare -p options
@@ -42,20 +42,20 @@ function TestParseOption2 {
     fi
 }
 
-function TestParseOption2s {
-    TestParseOption2 b
-    TestParseOption2 -b
-    TestParseOption2 --bar
-    TestParseOption2 -f
-    TestParseOption2 -fval
-    TestParseOption2 -f val
-    TestParseOption2 --foo
-    TestParseOption2 --foo val
-    TestParseOption2 -bc
-    TestParseOption2 -bcfval
-    TestParseOption2 -bcf val
-    TestParseOption2 -@
-    TestParseOption2 --f@@
+function TestParseOptions {
+    TestParseOption b
+    TestParseOption -b
+    TestParseOption --bar
+    TestParseOption -f
+    TestParseOption -fval
+    TestParseOption -f val
+    TestParseOption --foo
+    TestParseOption --foo val
+    TestParseOption -bc
+    TestParseOption -bcfval
+    TestParseOption -bcf val
+    TestParseOption -@
+    TestParseOption --f@@
 }
 
 function Test1ParseOptions2 {
@@ -86,7 +86,7 @@ function TestParseOptions2 {
 }
 
 function Main {
-    TestParseOption2s
+    TestParseOptions
     TestParseOptions2
 }
 

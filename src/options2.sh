@@ -145,7 +145,7 @@ function DefineOption {
 # (0-2).
 #
 # On error, 1 is returned and _2 is set to an appropriate error message.
-function ParseOption2 {
+function ParseOption {
     local Options_parse_callback="$1"
     local Options_parse_context="$2"
     local Options_parse_arg="$3"
@@ -337,7 +337,7 @@ function ParseOptions2 {
             break
         fi
 
-        if ! ParseOption2 Options_OptionCallback "$ns" "$@"
+        if ! ParseOption Options_OptionCallback "$ns" "$@"
         then
             Fatal "$_2"
         fi
