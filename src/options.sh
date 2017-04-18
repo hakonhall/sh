@@ -27,6 +27,9 @@ declare DefineOption__a=false
 declare DefineOption__v=""
 
 function DefineOption {
+    DefineOption__a=false
+    DefineOption__v=""
+
     ParseOptions -n DefineOption -- "$@"
     set -- "${_1a[@]}"
 
@@ -82,7 +85,11 @@ function DefineOption {
     fi
 
     info[varname]="$varname"
-
+    if "$DefineOption__a"
+    then
+        info[-a]="$DefineOption__a"
+    fi
+    
     local alias
     for alias in "$@"
     do
@@ -397,9 +404,11 @@ function Options_OptionCallback {
     fi
 }
 
-# Usage: ParseOptions [OPTION...] -- [ARG...]
+# Usage: ParseOptions [-n NS] -- [ARG...]
 # Parse the command line arguments ARG for options and non-options
 function ParseOptions {
+    local ns=""
+
     while true
     do
         if (( $# == 0 ))
@@ -413,13 +422,26 @@ function ParseOptions {
             break
         fi
 
-        shift
+        case "$1" in
+            -n)
+                shift
+
+                if (( $# == 0 ))
+                then
+                    Fatal "Missing argument to '-n'"
+                fi
+                ns="$1"
+                shift
+                ;;
+            -*)
+                Fatal "Unknown option '$1'"
+                ;;
+            *)
+                break
+                ;;
+        esac
     done
             
-    local -A our_options=([-n]=true)
-
-    local ns=""
-
     local context=Options_option
     if (( ${#ns} > 0 ))
     then

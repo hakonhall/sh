@@ -4,32 +4,11 @@ then
 fi
 declare -r SOURCE_DEFINE_SH=true
 
+source variable.sh
 source base.sh
 
 declare -i DEFINE_next_id=0
 declare -A DEFINE_namespaces=()
-
-function AssertValidVariableName {
-    local id="$1"
-
-    if test "$id" == _
-    then
-        # $_ is an automatic variable
-        :
-    elif [[ "$id" =~ ^[0-9]+$ ]]
-    then
-        # An integer cannot name a variable
-        :
-    elif [[ "$id" =~ ^[a-zA-Z0-9_]+$ ]]
-    then
-        return 0
-    else
-        # E.g. empty string, @£@$, etc.
-        :
-    fi
-
-    Fatal "$func: \`$id': not a valid identifier"
-}
 
 function ResolveGlobalVariableName {
     local namespace="$1"

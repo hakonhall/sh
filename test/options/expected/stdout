@@ -56,6 +56,6 @@ declare -- _c="true"
 DefineOption -- --single -s -S
 declare -A Options_option_ids='([--single]="__single" [-S]="__single" [-s]="__single" )'
 declare -A Options_option_info___single='([varname]="__single" )'
-DefineOption -- --tool -t
+DefineOption -a -- --tool -t
 declare -A Options_option_ids='([-t]="__tool" [--tool]="__tool" )'
-declare -A Options_option_info___tool='([varname]="__tool" )'
+declare -A Options_option_info___tool='([varname]="__tool" [-a]="true" )'

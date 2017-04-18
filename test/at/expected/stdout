@@ -1,0 +1,11 @@
+new complex 1 2
+this='0'
+complex_init arguments: '1 2'
+declare -- _1="AT_NS_0_field_x"
+declare -- _1="AT_NS_0_field_y"
+declare -- address="0"
+declare -- _1="AT_NS_0_field_x"
+declare -i AT_NS_0_field_x="1"
+Object 0 of class complex
+Field x: declare -i AT_NS_0_field_x="4"
+Field y: declare -i AT_NS_0_field_y="6"
