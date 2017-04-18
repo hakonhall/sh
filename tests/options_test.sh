@@ -97,7 +97,7 @@ function TestDefineOption {
     Test1DefineOption -- --single -s -S
     declare -p Options_option_info___single
 
-    Test1DefineOption -- --tool -t
+    Test1DefineOption -a -- --tool -t
     declare -p Options_option_info___tool
 }
 

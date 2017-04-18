@@ -8,20 +8,33 @@ declare -r SOURCE_OPTIONS_SH=1
 
 source base.sh
 
+function options_
+
+
 # Problem:
 #  - How does ParseOptions parse its own options?
 #  - It could perhaps define its options (DefineOption) and then call
 #    ParseOptions?  But then, how does DefineOption parse ITS options?
 
-function InternalParseOptions {
-    local -n InternalParseOptions_options="$1"
-    shift
+# Usage: P
 
-    for 
-
+# Usage: ParseOptions [SPEC...]
+# Parse the arguments of a function - split options from non-options
+#
+# Makes it easy lookup access the options, and provides the non-options as a
+# list.
 function ParseOptions {
-    local -A options=([-n]="")
-    InternalParseOptions options "$@"
+    local -A options=(
+        [-a]=false
+        [-v]=:
+    )
+
+    DefineGlobalVariable -cN
+    local id="$REPLY"
+
+    local -A options_spec=(
+        ["--foo|-f"]="--bind=__foo :val"
+    )
 }
 
 
