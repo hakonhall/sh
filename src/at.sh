@@ -1,24 +1,22 @@
-if test -v SOURCE_CLASS_SH
+if test -v SOURCE_AT_SH
 then
     return
 fi
-declare -r SOURCE_CLASS_SH=true
+declare -r SOURCE_AT_SH=true
 
-# Only needed for assertvalidvariablename
-source define.sh
-
+source variable.sh
 source match.sh
 
-declare CLASS_IN_INIT=false
-declare -i CLASS_NEXT_ID=0
+declare AT_IN_INIT=false
+declare -i AT_NEXT_ID=0
 
 function new {
     local class="$1"
     shift
     local -a init_args=("$@")
 
-    local address="$(( CLASS_NEXT_ID++ ))"
-    local ns=CLASS_NS_"$address"
+    local address="$(( AT_NEXT_ID++ ))"
+    local ns=AT_NS_"$address"
     declare -g "$ns"_class="$class"
     declare -gA "$ns"_fields
     local -n fields="$ns"_fields
@@ -30,14 +28,14 @@ function new {
     if declare -F > /dev/null
     then
         local this="$address"
-        local previous_at_in_init="$CLASS_IN_INIT"
-        CLASS_IN_INIT=true
+        local previous_at_in_init="$AT_IN_INIT"
+        AT_IN_INIT=true
         if "$init_function_name" "${init_args[@]}"
         then
-            CLASS_IN_INIT="$previous_at_in_init"
+            AT_IN_INIT="$previous_at_in_init"
         else
             exit_code=$?
-            CLASS_IN_INIT="$previous_at_in_init"
+            AT_IN_INIT="$previous_at_in_init"
         fi
     fi
 
@@ -53,7 +51,7 @@ function @local {
         Fatal "'this' is not defined"
     fi
 
-    if ! "$CLASS_IN_INIT"
+    if ! "$AT_IN_INIT"
     then
         Fatal "@local can only be called within the init function"
     fi
@@ -96,7 +94,7 @@ function @local {
     local field_name="$1"
     shift
     AssertValidVariableName "$field_name"
-    local name=CLASS_NS_"$this"_field_"$field_name"
+    local name=AT_NS_"$this"_field_"$field_name"
 
     if test -v "$name"
     then
@@ -105,7 +103,7 @@ function @local {
 
     declare -g "${!options[@]}" "$name"
 
-    local -n fields=CLASS_NS_"$this"_fields
+    local -n fields=AT_NS_"$this"_fields
     fields["$field_name"]="{options[*]}"
 
     if test -v options[-a]
@@ -150,7 +148,7 @@ function @local {
 #
 # If MEMBER has been defined as a member variable with @local in the CLASS_init
 # function, _1 is set to the fully qualified name of that member variable (a
-# unique global variable) with a prefix under CLASS_NS.  No ARG can be present.
+# unique global variable) with a prefix under AT_NS.  No ARG can be present.
 # Use nameref (declare -n) to refer to the variable.
 #
 # Otherwise, if CLASS_MEMBER is a function, and that function is called with a
@@ -183,7 +181,7 @@ function @ {
 
     if (( ${#member} > 0 ))
     then
-        local field_name=CLASS_NS_"$object"_field_"$member"
+        local field_name=AT_NS_"$object"_field_"$member"
         if test -v "$field_name"
         then
             if (( $# != 0 ))
@@ -195,7 +193,7 @@ function @ {
             return 0
         fi
 
-        local class_varname=CLASS_NS_"$object"_class
+        local class_varname=AT_NS_"$object"_class
         local -n class="$class_varname"
 
         local method="$class"_"$member"
@@ -217,12 +215,12 @@ function @ {
 function @dump {
     local address="$1"
 
-    local class_varname=CLASS_NS_"$address"_class
+    local class_varname=AT_NS_"$address"_class
     local -n class="$class_varname"
 
     printf "Object %d of class %s\n" "$address" "$class"
 
-    local -n fields=CLASS_NS_"$address"_fields
+    local -n fields=AT_NS_"$address"_fields
     local field
     for field in "${!fields[@]}"
     do
