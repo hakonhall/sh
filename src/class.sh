@@ -4,21 +4,68 @@ then
 fi
 declare -r SOURCE_CLASS_SH=true
 
-# Only needed for assertvalidvariablename
-source define.sh
+# class.sh - Classes in Bash
+#
+# A class CLASS has a member functions (methods) named CLASS_METHOD.  To create
+# a new object of a class, use @new.
+#
+#   @new CLASS
+#   local obj="$_1"
+#
+# A special method CLASS_init (constructor) is called as part of @new, if it
+# exists.  Inside the constructor (only), member variables can be declared and
+# set with @local.
+#
+#   @local -a array el1 el2
+#
+# Inside any method, you can get the fully qualified global variable name of
+# any field FIELD using @field_name, which can be used with nameref (local -n)
+# to change the field.
+#
+#   @field_name array
+#   local -n array="$_1"
+#   array+=(el3)
+#
+# Own methods can be called with @call
+#
+#   @call add el4
+#
+# which will call CLASS_add with 1 argument "el4".
+#
+# You can refer to other object's fields and methods by dotting the object:
+#
+#   @field_name obj.array
+#   ...
+#   @call obj.add el5
+#
+# Fields and methods starting with an underscore cannot be referenced in this
+# way - they are private to the class.
 
+source _class.sh
+
+source variable.sh
 source match.sh
 
 declare CLASS_IN_INIT=false
 declare -i CLASS_NEXT_ID=0
 
-function new {
+# Usage: @new CLASS [ARG...]
+# Creates a new object of type CLASS
+#
+# Sets _1 to an identifier (address) that can be used to refer to the created
+# object.  Any variable having the address as a value will be called a pointer.
+#
+# If there is a function CLASS_init (constructor), it will be called with the
+# given args.  Inside the constructor, 'this' is a pointer to the object being
+# created.  @local can be used to create global variables identifiable by the
+# object pointer and a name.
+function @new {
     local class="$1"
     shift
     local -a init_args=("$@")
 
     local address="$(( CLASS_NEXT_ID++ ))"
-    local ns=CLASS_NS_"$address"
+    local ns=CLASS_"$address"
     declare -g "$ns"_class="$class"
     declare -gA "$ns"_fields
     local -n fields="$ns"_fields
@@ -29,16 +76,22 @@ function new {
     local init_function_name="$class"_init
     if declare -F > /dev/null
     then
-        local this="$address"
-        local previous_at_in_init="$CLASS_IN_INIT"
+        local saved_class_in_init="$CLASS_IN_INIT"
         CLASS_IN_INIT=true
+
+        # Makes 'this' available as a variable in init function.
+        local this="$address"
+
         if "$init_function_name" "${init_args[@]}"
         then
-            CLASS_IN_INIT="$previous_at_in_init"
+            :
         else
+            # This should probably be fatal, but we'll leave it to the
+            # constructor and client.
             exit_code=$?
-            CLASS_IN_INIT="$previous_at_in_init"
         fi
+
+        CLASS_IN_INIT="$saved_class_in_init"
     fi
 
     _1="$address"
@@ -96,7 +149,7 @@ function @local {
     local field_name="$1"
     shift
     AssertValidVariableName "$field_name"
-    local name=CLASS_NS_"$this"_field_"$field_name"
+    local name=CLASS_"$this"_field_"$field_name"
 
     if test -v "$name"
     then
@@ -105,7 +158,7 @@ function @local {
 
     declare -g "${!options[@]}" "$name"
 
-    local -n fields=CLASS_NS_"$this"_fields
+    local -n fields=CLASS_"$this"_fields
     fields["$field_name"]="{options[*]}"
 
     if test -v options[-a]
@@ -139,94 +192,50 @@ function @local {
     fi
 }
 
-# Usage: @ REF [ARG...]
-# Resolve reference
-#
-# REF is of the form:
-#   ADDR.MEMBER   Member variable or member function MEMBER of object with
-#                 address ADDR as returned in _1 of 'new'.
-#   .MEMBER       Same as ADDR.MEMBER with ADDR set to "$this".  Can be used
-#                 in member function.
-#
-# If MEMBER has been defined as a member variable with @local in the CLASS_init
-# function, _1 is set to the fully qualified name of that member variable (a
-# unique global variable) with a prefix under CLASS_NS.  No ARG can be present.
-# Use nameref (declare -n) to refer to the variable.
-#
-# Otherwise, if CLASS_MEMBER is a function, and that function is called with a
-# variable 'this' set to ADDR, and arguments [ARG...].
-function @ {
-    if test -v this
-    then
-        local has_this=true
-    else
-        local has_this=false
-    fi
+function @field_name {
+    @_resolve_address "$@"
+    @_resolve_field "$_1" "$_2"
+}
 
+# Usage: @call REF [ARG...]
+# Calls the member function given by REF with the given arguments.
+#
+# See @resolve for how REF is resolved.
+function @call {
     local ref="$1"
     shift
 
-    local object member
-    if ! Match "$ref" '^([a-zA-Z0-9_]+)?(\.([a-zA-Z0-9_]+))?$' object '' member
+    @_resolve_address "$ref"
+    local address="$_1"
+    local member="$_2"
+
+    @_class "$address"
+    local class="$_1"
+
+    local method="$class"_"$member"
+    if ! declare -F "$method" > /dev/null
     then
-        Fatal "Bad reference '$ref'"
+        Fatal "No such function '$method'"
     fi
 
-    if (( ${#object} == 0 ))
-    then
-        if ! "$has_this"
-        then
-            Fatal "'this' variable were not defined"
-        fi
-        object="$this"
-    fi
-
-    if (( ${#member} > 0 ))
-    then
-        local field_name=CLASS_NS_"$object"_field_"$member"
-        if test -v "$field_name"
-        then
-            if (( $# != 0 ))
-            then
-                Fatal "Not supported yet"
-            fi
-
-            _1="$field_name"
-            return 0
-        fi
-
-        local class_varname=CLASS_NS_"$object"_class
-        local -n class="$class_varname"
-
-        local method="$class"_"$member"
-        if declare -F "$method" > /dev/null
-        then
-            local this="$object"
-            if "$method" "$@"
-            then
-                return 0
-            else
-                return $?
-            fi
-        fi
-    fi
-
-    Fatal "Not supported yet"
+    local this="$address"
+    "$method" "$@"
 }
 
 function @dump {
     local address="$1"
 
-    local class_varname=CLASS_NS_"$address"_class
+    local class_varname=CLASS_"$address"_class
     local -n class="$class_varname"
 
-    printf "Object %d of class %s\n" "$address" "$class"
+    printf "%s object with address %d\n" "$class" "$address"
 
-    local -n fields=CLASS_NS_"$address"_fields
+    local -n fields=CLASS_"$address"_fields
     local field
     for field in "${!fields[@]}"
     do
-        @ "$address"."$field"
-        printf "Field %s: %s\n" "$field" "$(declare -p "$_1")"
+        @_resolve_field "$address" "$field"
+        local varname="$_1"
+        printf "Field %s: %s\n" "$field" "$(declare -p "$varname")"
     done
 }
