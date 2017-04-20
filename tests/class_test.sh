@@ -29,6 +29,19 @@ function List_print {
     fi
 }
 
+function List_access {
+    @field_name ptr
+    local -n ptr="$_1"
+    if (( ${#ptr} == 0 ))
+    then
+        Fatal "Empty ptr"
+    fi
+
+    @field_name "$ptr"._priv
+    local -n other_priv="$_1"
+    echo "other's private data: $other_priv"
+}
+
 function Main {
     @new TestClass
     local test_object="$_1"
@@ -60,6 +73,8 @@ function Main {
     AssertDeath 1 "Tried to access private field" @field_name "$o3"._priv
 
     @call "$o3".print
+
+    @call "$o3".access
 }
 
 Main "$@"

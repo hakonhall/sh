@@ -85,7 +85,24 @@ function @_resolve_address {
         AssertValidVariableName "$field"
         if test "${field:0:1}" == _
         then
-            Fatal "Tried to access private field: '$field'"
+            # Still allow it if the class is identical.
+            if test -v this
+            then
+                @_class "$this"
+                local this_class="$_1"
+
+                @_class "$address"
+                local address_class="$_1"
+
+                if test "$this_class" == "$address_class"
+                then
+                    : # OK
+                else
+                    Fatal "Tried to access private field: '$field'"
+                fi
+            else
+                Fatal "Tried to access private field: '$field'"
+            fi
         fi
     fi
 
