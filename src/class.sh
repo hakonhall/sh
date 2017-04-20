@@ -6,21 +6,24 @@ declare -r SOURCE_CLASS_SH=true
 
 # class.sh - Classes in Bash
 #
-# A class CLASS has a member functions (methods) named CLASS_METHOD.  To create
-# a new object of a class, use @new.
+# A class CLASS has member functions (methods) named CLASS_METHOD.  To create a
+# new object of a class, use @new.
 #
 #   @new CLASS
 #   local obj="$_1"
 #
-# A special method CLASS_init (constructor) is called as part of @new, if it
-# exists.  Inside the constructor (only), member variables can be declared and
-# set with @local.
+# The value "$obj" may best be described as the address of the object, making
+# 'obj' a pointer to the object, but this distinction is rarely needed.  A
+# special method CLASS_init (constructor) is called by @new, if it exists.
+# Inside the constructor (only), member variables can be declared and set with
+# @local.
 #
 #   @local -a array el1 el2
 #
-# Inside any method, you can get the fully qualified global variable name of
-# any field FIELD using @field_name, which can be used with nameref (local -n)
-# to change the field.
+# Inside any method, the address of the current object is accessible as
+# "$this".  You can get the fully qualified global variable name of any field
+# FIELD using @field_name, which can be used with nameref (local -n) to change
+# the field.
 #
 #   @field_name array
 #   local -n array="$_1"
@@ -39,7 +42,8 @@ declare -r SOURCE_CLASS_SH=true
 #   @call obj.add el5
 #
 # Fields and methods starting with an underscore cannot be referenced in this
-# way - they are private to the class.
+# way unless the dereferenced object is of the exact same class - they are
+# private to the class.
 
 source _class.sh
 
@@ -100,6 +104,9 @@ function @new {
 
 # Usage: @local [-aAilrtu] NAME [VALUE...]
 # Declare a member variable (field)
+#
+# Can only be called in the constructor.  Fields starting with an underscore
+# cannot be accessed using dot notation.
 function @local {
     if ! test -v this
     then
