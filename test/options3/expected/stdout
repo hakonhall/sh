@@ -1,0 +1,109 @@
+Option@1 {
+  _value: declare -- CLASS_1_field__value="false"
+  option: declare -- CLASS_1_field_option="--foo1"
+  aliases: declare -A CLASS_1_field_aliases='([--foo1]="1" )'
+  _has_argument: declare -- CLASS_1_field__has_argument="false"
+}
+Option@2 {
+  _value: declare -- CLASS_2_field__value="false"
+  option: declare -- CLASS_2_field_option="--foo2"
+  aliases: declare -A CLASS_2_field_aliases='([--foo2]="2" )'
+  _has_argument: declare -- CLASS_2_field__has_argument="true"
+}
+Option@3 {
+  _value: declare -- CLASS_3_field__value="true"
+  option: declare -- CLASS_3_field_option="--foo3"
+  aliases: declare -A CLASS_3_field_aliases='([--foo3]="3" )'
+  _has_argument: declare -- CLASS_3_field__has_argument="true"
+}
+ArgumentParser@4 {
+  options: declare -A CLASS_4_field_options='([--bar]="6" [--foo]="5" [--zoo]="7" )'
+  args: declare -a CLASS_4_field_args='()'
+}
+ArgumentParser@4 {
+  options: declare -A CLASS_4_field_options='([--bar]="6" [--foo]="5" [--zoo]="7" )'
+  args: declare -a CLASS_4_field_args='([0]="arg1" [1]="arg2")'
+}
+Option 5: --foo val
+Option 6: --bar true
+Option 7: --zoo false
+args: 'arg1 arg2'
+ArgumentParser@8 {
+  options: declare -A CLASS_8_field_options='([--bar]="10" [--foo]="9" [--zoo]="11" )'
+  args: declare -a CLASS_8_field_args='()'
+}
+ArgumentParser@8 {
+  options: declare -A CLASS_8_field_options='([--bar]="10" [--foo]="9" [--zoo]="11" )'
+  args: declare -a CLASS_8_field_args='([0]="arg1" [1]="arg2")'
+}
+Option 9: --foo val
+Option 10: --bar true
+Option 11: --zoo false
+args: 'arg1 arg2'
+ArgumentParser@12 {
+  options: declare -A CLASS_12_field_options='([-z]="15" [-f]="13" [-b]="14" )'
+  args: declare -a CLASS_12_field_args='()'
+}
+ArgumentParser@12 {
+  options: declare -A CLASS_12_field_options='([-z]="15" [-f]="13" [-b]="14" )'
+  args: declare -a CLASS_12_field_args='([0]="arg1" [1]="arg2")'
+}
+Option 13: -f val
+Option 14: -b true
+Option 15: -z false
+args: 'arg1 arg2'
+ArgumentParser@16 {
+  options: declare -A CLASS_16_field_options='([-z]="19" [-f]="17" [-b]="18" )'
+  args: declare -a CLASS_16_field_args='()'
+}
+ArgumentParser@16 {
+  options: declare -A CLASS_16_field_options='([-z]="19" [-f]="17" [-b]="18" )'
+  args: declare -a CLASS_16_field_args='([0]="arg1" [1]="arg2")'
+}
+Option 17: -f val
+Option 18: -b true
+Option 19: -z false
+args: 'arg1 arg2'
+ArgumentParser@20 {
+  options: declare -A CLASS_20_field_options='([-z]="23" [-f]="21" [-b]="22" )'
+  args: declare -a CLASS_20_field_args='()'
+}
+ArgumentParser@20 {
+  options: declare -A CLASS_20_field_options='([-z]="23" [-f]="21" [-b]="22" )'
+  args: declare -a CLASS_20_field_args='([0]="arg1" [1]="arg2")'
+}
+Option 21: -f val
+Option 22: -b true
+Option 23: -z false
+args: 'arg1 arg2'
+ArgumentParser@24 {
+  options: declare -A CLASS_24_field_options='([-z]="27" [-f]="25" [-b]="26" )'
+  args: declare -a CLASS_24_field_args='()'
+}
+ArgumentParser@24 {
+  options: declare -A CLASS_24_field_options='([-z]="27" [-f]="25" [-b]="26" )'
+  args: declare -a CLASS_24_field_args='([0]="arg1" [1]="arg2")'
+}
+Option 25: -f val
+Option 26: -b true
+Option 27: -z false
+args: 'arg1 arg2'
+--foo val
+--bar true
+--zoo false
+args: 'arg1 arg2 arg3'
+ParseProgramArguments
+--foo='init_fooval'
+-f='init_fval'
+--bar='false'
+-b='false'
+${#_1a[@]}=0
+_1a=''
+ParseProgramArguments --foo fooval arg1 -b arg2 -f fval arg3
+--foo='fooval'
+-f='fval'
+--bar='false'
+-b='true'
+${#_1a[@]}=3
+_1a='arg1 arg2 arg3'
+-f value: val

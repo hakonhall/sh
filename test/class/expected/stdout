@@ -1,19 +1,23 @@
-TestClass object with address 0
-Field A: declare -A CLASS_0_field_A='([k1]="v1" [k2]="v2" )'
-Field a: declare -a CLASS_0_field_a='([0]="a1" [1]="a2")'
-Field x: declare -- CLASS_0_field_x="1"
-List object with address 1
-Field _priv: declare -- CLASS_1_field__priv="private_value"
-Field data: declare -- CLASS_1_field_data="d1"
-Field ptr: declare -- CLASS_1_field_ptr=""
-List object with address 2
-Field _priv: declare -- CLASS_2_field__priv="private_value"
-Field data: declare -- CLASS_2_field_data="d2"
-Field ptr: declare -- CLASS_2_field_ptr="1"
-List object with address 3
-Field _priv: declare -- CLASS_3_field__priv="private_value"
-Field data: declare -- CLASS_3_field_data="d3"
-Field ptr: declare -- CLASS_3_field_ptr="2"
+TestClass@0 {
+  A: declare -A CLASS_0_field_A='([k1]="v1" [k2]="v2" )'
+  a: declare -a CLASS_0_field_a='([0]="a1" [1]="a2")'
+  x: declare -- CLASS_0_field_x="1"
+}
+List@1 {
+  _priv: declare -- CLASS_1_field__priv="private_value"
+  data: declare -- CLASS_1_field_data="d1"
+  ptr: declare -- CLASS_1_field_ptr=""
+}
+List@2 {
+  _priv: declare -- CLASS_2_field__priv="private_value"
+  data: declare -- CLASS_2_field_data="d2"
+  ptr: declare -- CLASS_2_field_ptr="1"
+}
+List@3 {
+  _priv: declare -- CLASS_3_field__priv="private_value"
+  data: declare -- CLASS_3_field_data="d3"
+  ptr: declare -- CLASS_3_field_ptr="2"
+}
 @_resolve_address 3.ptr.ptr.data
 address=1
 field=data

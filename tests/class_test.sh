@@ -60,7 +60,7 @@ function Main {
     @dump "$o3"
 
     echo @_resolve_address "$o3".ptr.ptr.data
-    @_resolve_address "$o3".ptr.ptr.data
+    @_resolve_address_of_ref "$o3".ptr.ptr.data
     echo "address=$_1"
     echo "field=$_2"
 
@@ -72,9 +72,12 @@ function Main {
     AssertDeath 1 "'this' is not defined" @field_name .ptr
     AssertDeath 1 "Tried to access private field" @field_name "$o3"._priv
 
-    @call "$o3".print
+    AssertDeath 1 "does not have a field 'bar'" @field_name "$o1".bar
 
-    @call "$o3".access
+    @call @o3.print
+
+    @call @o3.access
+    AssertDeath 1 "List does not have a method 'zoo'" @call "$o3".zoo
 }
 
 Main "$@"

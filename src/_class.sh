@@ -1,30 +1,72 @@
-function @_class {
+
+function @_qualify_class {
     local address="$1"
-    local -n class=CLASS_"$address"_class
-    _1="$class"
+    _1=CLASS_"$address"_class
 }
 
-function @_fields_name {
+function @_qualify_fields {
     local address="$1"
     _1=CLASS_"$address"_fields
 }
 
-function @_verify_address {
-    local address="$1"
-    if ! test -v CLASS_"$address"_class
-    then
-        Fatal "'$address' is not a valid object address"
-    fi
-}
-
-function @_resolve_field {
+function @_qualify_field {
     local address="$1"
     local field_name="$2"
 
     _1=CLASS_"$address"_field_"$field_name"
 }
 
-function @_resolve_address {
+function @_qualify_field_options {
+    local address="$1"
+    local field_name="$2"
+    _1=CLASS_"$address"_options_"$field_name"
+}
+
+function @_verify_address {
+    local address="$1"
+
+    @_qualify_class "$address"
+    local qualified_class="$_1"
+
+    if ! test -v "$qualified_class"
+    then
+        Fatal "'$address' is not a valid object address"
+    fi
+}
+
+# The address is assumed to be verified.
+# We need to verify the field_name is a valid field name, and verify the field
+# name has been defined.
+function @_resolve_field {
+    local address="$1"
+    local field_name="$2"
+
+    # See @local
+    AssertValidVariableName "$field_name"
+    @_qualify_field "$address" "$field_name"
+    local qualified_field_name="$_1"
+    if ! declare -p "$qualified_field_name" &> /dev/null
+    then
+        @class "$address"
+        local class="$_1"
+
+        Fatal "$class@$address does not have a field '$field_name'"
+    fi
+}
+
+function @_resolve_address_of_ref {
+    local _resolve_address_of_ref_ptr _resolve_address_of_ref_suffix
+    if Match "$1" '@([^.]+)(.*)' _resolve_address_of_ref_ptr \
+             _resolve_address_of_ref_suffix
+    then
+        local -n _resolve_address_of_ref_address="$_resolve_address_of_ref_ptr"
+        @_resolve_address_of_ref2 "$_resolve_address_of_ref_address$_resolve_address_of_ref_suffix"
+    else
+        @_resolve_address_of_ref2 "$1"
+    fi
+}
+
+function @_resolve_address_of_ref2 {
     local ref="$1"
 
     if (( ${#ref} == 0 ))
@@ -68,17 +110,22 @@ function @_resolve_address {
         do
             AssertValidVariableName "$addrfield"
 
-            local -n fields=CLASS_"$address"_fields
-            if test -v fields[-a] -o -v fields[-A]
+            @_resolve_field "$address" "$addrfield"
+            local new_address_varname="$_1"
+
+            # By internal consistency, since the field resolved, the field
+            # options is implicitly verified so we can use @_qualify*.
+            @_qualify_field_options "$address" "$addrfield"
+            local -n field_options="$_1"
+            if test -v field_options[-a] -o -v field_options[-A]
             then
                 Fatal "Trying to dereference a non-string"
             fi
 
-            @_resolve_field "$address" "$addrfield"
-            local -n new_address="$_1"
-            address="$new_address"
+            local -n new_address="$new_address_varname"
+            @_verify_address "$new_address"
 
-            @_verify_address "$address"
+            address="$new_address"
         done
 
         field="$suffix"
@@ -88,10 +135,10 @@ function @_resolve_address {
             # Still allow it if the class is identical.
             if test -v this
             then
-                @_class "$this"
+                @class "$this"
                 local this_class="$_1"
 
-                @_class "$address"
+                @class "$address"
                 local address_class="$_1"
 
                 if test "$this_class" == "$address_class"
