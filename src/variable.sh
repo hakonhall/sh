@@ -4,6 +4,13 @@ then
 fi
 declare -r SOURCE_VARIABLE_SH=true
 
+function AssertTrueOrFalse {
+    if test "$1" != true -a "$1" != false
+    then
+        Fatal "'$1' is neither true nor false"
+    fi
+}
+
 function AssertValidVariableName {
     local id="$1"
 

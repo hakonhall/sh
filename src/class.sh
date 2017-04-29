@@ -69,10 +69,13 @@ function @new {
     local -a init_args=("$@")
 
     local address="$(( CLASS_NEXT_ID++ ))"
-    local ns=CLASS_"$address"
-    declare -g "$ns"_class="$class"
-    declare -gA "$ns"_fields
-    local -n fields="$ns"_fields
+
+    @_qualify_class "$address"
+    declare -g "$_1=$class"
+
+    @_qualify_fields "$address"
+    declare -gA "$_1"
+    local -n fields="$_1"
     fields=()
 
     local -i exit_code=0
@@ -156,7 +159,8 @@ function @local {
     local field_name="$1"
     shift
     AssertValidVariableName "$field_name"
-    local name=CLASS_"$this"_field_"$field_name"
+    @_qualify_field "$this" "$field_name"
+    local name="$_1"
 
     if test -v "$name"
     then
@@ -165,8 +169,23 @@ function @local {
 
     declare -g "${!options[@]}" "$name"
 
-    local -n fields=CLASS_"$this"_fields
-    fields["$field_name"]="{options[*]}"
+    @_qualify_fields "$this"
+    local -n fields="$_1"
+    fields["$field_name"]=true
+
+    @_qualify_field_options "$address" "$field_name"
+    declare -gA "$_1"
+    local -n field_options="$_1"
+    field_options=()
+    local option
+    for option in "${options[@]}"
+    do
+        field_options["$option"]=true
+    done
+
+    @_qualify_field_options "$this"
+    local -n field_options="$_1"
+    field_options=("${options[@]}")
 
     if test -v options[-a]
     then
@@ -199,8 +218,22 @@ function @local {
     fi
 }
 
+function @class {
+    local address="$1"
+
+    @_verify_address "$address"
+    local -n class=CLASS_"$address"_class
+    _1="$class"
+}
+
 function @field_name {
-    @_resolve_address "$@"
+    if (( $# != 1 ))
+    then
+        Fatal "Function takes exactly one argument"
+    fi
+    local ref="$1"
+
+    @_resolve_address_of_ref "$ref"
     @_resolve_field "$_1" "$_2"
 }
 
@@ -212,17 +245,17 @@ function @call {
     local ref="$1"
     shift
 
-    @_resolve_address "$ref"
+    @_resolve_address_of_ref "$ref"
     local address="$_1"
     local member="$_2"
 
-    @_class "$address"
+    @class "$address"
     local class="$_1"
 
     local method="$class"_"$member"
     if ! declare -F "$method" > /dev/null
     then
-        Fatal "No such function '$method'"
+        Fatal "$class does not have a method '$member' ($method)"
     fi
 
     local this="$address"
@@ -232,17 +265,19 @@ function @call {
 function @dump {
     local address="$1"
 
-    local class_varname=CLASS_"$address"_class
-    local -n class="$class_varname"
+    @class "$address"
+    local class="$_1"
 
-    printf "%s object with address %d\n" "$class" "$address"
+    printf "%s@%d {\n" "$class" "$address"
 
-    local -n fields=CLASS_"$address"_fields
+    @_qualify_fields "$address"
+    local -n fields="$_1"
     local field
     for field in "${!fields[@]}"
     do
-        @_resolve_field "$address" "$field"
+        @_qualify_field "$address" "$field"
         local varname="$_1"
-        printf "Field %s: %s\n" "$field" "$(declare -p "$varname")"
+        printf "  %s: %s\n" "$field" "$(declare -p "$varname")"
     done
+    printf "}\n"
 }
